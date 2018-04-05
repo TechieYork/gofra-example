@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package tencent.user.email;
+
+// The greeting service definition.
+service EmailService {
+  // Sends a greeting
+  rpc AddEmail (AddEmailRequest) returns (AddEmailResponse) {}
+}
+
+message AddEmailRequest {
+    string email = 1;
+}
+
+message AddEmailResponse {
+    string email = 1;
+}
+

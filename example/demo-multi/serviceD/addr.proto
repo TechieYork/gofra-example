@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package tencent.user.addr;
+
+// The greeting service definition.
+service AddrService {
+  // Sends a greeting
+  rpc AddAddr (AddAddrRequest) returns (AddAddrResponse) {}
+}
+
+message AddAddrRequest {
+    string add = 1;
+}
+
+message AddAddrResponse {
+    string addr = 1;
+}
+
