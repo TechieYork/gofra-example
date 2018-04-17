@@ -46,7 +46,7 @@ func AddName(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddName request failed! error%v", err.Error())
-		conn.Unhealhty()
+		conn.Unhealthy()
 		return err
 	}
 
@@ -72,7 +72,7 @@ func AddAge(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddAge request failed! error%v", err.Error())
-		conn.Unhealhty()
+		conn.Unhealthy()
 		return err
 	}
 
