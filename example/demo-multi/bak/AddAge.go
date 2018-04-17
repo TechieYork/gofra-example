@@ -46,7 +46,7 @@ func AddEmail(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddEmail request failed! error%v", err.Error())
-		conn.Unhealhty()
+		conn.Unhealthy()
 		return err
 	}
 
@@ -72,7 +72,7 @@ func AddAddr(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddAddr request failed! error%v", err.Error())
-		conn.Unhealhty()
+		conn.Unhealthy()
 		return err
 	}
 
