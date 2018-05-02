@@ -86,7 +86,7 @@ func testAddUser(addr string) {
                                 fmt.Printf("AddUser request failed! err:%v\r\n", err.Error())
                         }
 
-                        conn.Unhealhty()
+                        conn.Unhealthy()
 
                         return
                 }
