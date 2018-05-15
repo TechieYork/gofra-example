@@ -1,20 +1,11 @@
 
 {
-    "author":"techieliu",
+    "author":"foo",
     "project":"demo",
     "version":"0.0.1",
     "server":
     {
         "addr":"localhost:58888"
-    },
-    "client":
-    {
-        "pool":
-        {
-            "init_conns":5,
-            "max_conns":10,
-            "idle_time":30
-        }
     },
     "monitor_package":
     {
