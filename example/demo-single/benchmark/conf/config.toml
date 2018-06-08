@@ -1,0 +1,42 @@
+
+# Server configuration
+#
+# server.addr
+#	Server's address to listen on.
+# 	eg: 
+#		localhost:58888
+#		127.0.0.1:58888
+#		eth0:58888
+[server]
+    addr="localhost:58888"
+
+# Client configuration
+# [client]
+
+# Monitor configuration
+#
+# monitor.params
+#	Monitor's params to init
+#	Gofra take the statsd as the default monitor system
+#	so the params has 2 parts(all in a string array)
+#		1.statsd's UDP address
+#		2.the project's name
+#	eg:
+#		params=["127.0.0.1:8125", "demo"]
+[monitor]
+    params=["127.0.0.1:8125", "demo"]
+
+# Tracing configuration
+#
+# tracing.params
+#	tracing's params to init
+#	Gofra take the zipkin as the default tracing system
+#	so the params has 4 parts(all in a string array)
+#		1.zipkin's url
+#		2.debug flag 
+#		3.server's address
+#		4.the project's name
+#	eg:
+#		params=["http://127.0.0.1:9411/api/v1/spans", "false", "localhost:58888", "demo"]
+[tracing]
+    params=["http://127.0.0.1:9411/api/v1/spans", "false", "localhost:58888", "demo"]
