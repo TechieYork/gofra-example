@@ -5,29 +5,32 @@ import (
 	"flag"
 	"time"
 	"context"
+	"sync"
 
 	log "github.com/cihub/seelog"
 
     "google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+
     logger "github.com/DarkMetrix/gofra/common/logger/seelog"
 	monitor "github.com/DarkMetrix/gofra/common/monitor/statsd"
     tracing "github.com/DarkMetrix/gofra/common/tracing/zipkin"
+    pool "github.com/DarkMetrix/gofra/grpc-utils/pool"
 
     logInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/seelog_interceptor"
 	monitorInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/statsd_interceptor"
 	tracingInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/zipkin_interceptor"
 
 	health_check "github.com/TechieYork/gofra-example/example/demo-single/demo/src/proto/health_check"
-	"sync"
-	"github.com/grpc-ecosystem/go-grpc-middleware"
 )
 
 var (
-	threads = flag.Int("threads", 1, "Go routine number to send request")
-	requests = flag.Int("requests", 10000, "Request number each go routine to send")
-	with_interceptor = flag.Bool("with_interceptor", false, "If gRPC DailOption is with interceptors")
+	addr = flag.String("addr", "localhost:58888", "Service's address, default is localhost:58888")
+	threads = flag.Int("threads", 1, "Go routine number to send request, default is 1")
+	requests = flag.Int("requests", 10000, "Request number each go routine to send, default is 10000")
+	with_interceptor = flag.Bool("with_interceptor", false, "If gRPC DailOption is with interceptors, default is false")
 )
 
 func main() {
@@ -72,30 +75,29 @@ func main() {
 		clientOpts = append(clientOpts, grpc.WithInsecure())
 	}
 
+	err = pool.GetConnectionPool().Init(clientOpts)
+
+	if err != nil {
+		log.Warnf("Init pool failed! error:%v", err.Error())
+		return
+	}
+
 	//test benchmark
-	testBenchmark(clientOpts)
+	testBenchmark()
 }
 
-func testBenchmark(clientOpts []grpc.DialOption) {
+func testBenchmark() {
 	wg := &sync.WaitGroup{}
 	wg.Add(*threads)
 
 	for index := 0; index < *threads; index++ {
-		// init conn
-		conn, err := grpc.Dial("localhost:58888", clientOpts...)
-
-		if err != nil {
-			log.Warnf("grpc.Dial failed! error:%v", err.Error())
-			return
-		}
-
-		go testHealthCheck(conn, wg)
+		go testHealthCheck(wg)
 	}
 
 	wg.Wait()
 }
 
-func testHealthCheck(conn *grpc.ClientConn, wg *sync.WaitGroup) {
+func testHealthCheck(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	//calc thread time cost
@@ -116,9 +118,16 @@ func testHealthCheck(conn *grpc.ClientConn, wg *sync.WaitGroup) {
 	for index := 0; index < *requests; index++ {
 		reqStart := time.Now().UnixNano()
 
+		conn, err := pool.GetConnectionPool().GetConnection(context.Background(), *addr)
+
+		if err != nil {
+			log.Warnf("pool.GetConnection failed! error:%v", err.Error())
+			continue
+		}
+
 		c := health_check.NewHealthCheckServiceClient(conn)
 
-		_, err := c.HealthCheck(context.Background(), req)
+		_, err = c.HealthCheck(context.Background(), req)
 
 		if err != nil {
 			stat, ok := status.FromError(err)

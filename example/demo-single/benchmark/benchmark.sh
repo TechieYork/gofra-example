@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd ./bin
-./benchmark --threads=10 --requests=1000 --with_interceptor=false
+./benchmark --addr=localhost:58888 --threads=100 --requests=2000 --with_interceptor=false
