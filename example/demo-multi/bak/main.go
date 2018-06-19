@@ -47,7 +47,7 @@ func main() {
 			logInterceptor.GetClientInterceptor(),
 			monitorInterceptor.GetClientInterceptor())))
 
-	pool.GetConnectionPool().Init(clientOpts, 5, 10, time.Second * 10)
+	pool.GetConnectionPool().Init(clientOpts)
 
 	addr := commonUtils.GetRealAddrByNetwork("localhost:58888")
 
@@ -61,34 +61,31 @@ func testAddUser(addr string) {
 	// rpc call
 	req := new(user.AddUserRequest)
 
-	     for index := 0; index < 1; index++ {
-		     // get remote server connection
-                conn, err := pool.GetConnectionPool().GetConnection(context.Background(),":58888")
-                defer conn.Close()
+	for index := 0; index < 1; index++ {
+		// get remote server connection
+		conn, err := pool.GetConnectionPool().GetConnection(context.Background(),":58888")
 
-                // new client
-                c := user.NewUserServiceClient(conn.Get())
+		// new client
+		c := user.NewUserServiceClient(conn)
 
-                if err != nil {
-                        fmt.Printf("AddUser get connection failed! error%v", err.Error())
-                        continue
-                }
+		if err != nil {
+			fmt.Printf("AddUser get connection failed! error%v", err.Error())
+			continue
+		}
 
-                _, err = c.AddUser(context.Background(), req)
+		_, err = c.AddUser(context.Background(), req)
 
-                if err != nil {
-                        stat, ok := status.FromError(err)
+		if err != nil {
+			stat, ok := status.FromError(err)
 
-                        if ok {
-                                fmt.Printf("AddUser request failed! code:%d, message:%v\r\n",
-                                        stat.Code(), stat.Message())
-                        } else {
-                                fmt.Printf("AddUser request failed! err:%v\r\n", err.Error())
-                        }
+			if ok {
+				fmt.Printf("AddUser request failed! code:%d, message:%v\r\n",
+					stat.Code(), stat.Message())
+			} else {
+				fmt.Printf("AddUser request failed! err:%v\r\n", err.Error())
+			}
 
-                        conn.Unhealthy()
-
-                        return
-                }
-        }
+			return
+		}
+	}
 }
