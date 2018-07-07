@@ -16,12 +16,12 @@ import (
 
     logger "github.com/DarkMetrix/gofra/common/logger/seelog"
 	monitor "github.com/DarkMetrix/gofra/common/monitor/statsd"
-    tracing "github.com/DarkMetrix/gofra/common/tracing/zipkin"
+    tracing "github.com/DarkMetrix/gofra/common/tracing/jaeger"
     pool "github.com/DarkMetrix/gofra/grpc-utils/pool"
 
     logInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/seelog_interceptor"
 	monitorInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/statsd_interceptor"
-	tracingInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/zipkin_interceptor"
+	tracingInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/opentracing_interceptor"
 
 	health_check "github.com/TechieYork/gofra-example/example/demo-single/demo/src/proto/health_check"
 )
@@ -39,7 +39,7 @@ func main() {
 	defer log.Flush()
 
     // init log
-    err := logger.Init("../conf/log.config", "demo_test")
+    err := logger.Init("../conf/log.config", "demo_benchmark")
 
 	if err != nil {
 		log.Warnf("Init logger failed! error:%v", err.Error())
@@ -49,14 +49,14 @@ func main() {
 	defer log.Info("====== Test [demo-benchmark] end ======")
 
 	// init monitor
-	err = monitor.Init("127.0.0.1:8125", "demo")
+	err = monitor.Init("127.0.0.1:8125", "demo_benchmark")
 
 	if err != nil {
 		log.Warnf("Init monitor failed! error:%v", err.Error())
 	}
 
     // init tracing
-    err = tracing.Init("http://127.0.0.1:9411/api/v1/spans", "false", "localhost:58888", "demo")
+    err = tracing.Init("127.0.0.1:6831", "demo_benchmark")
 
 	if err != nil {
 		log.Warnf("Init tracing failed! error:%v", err.Error())

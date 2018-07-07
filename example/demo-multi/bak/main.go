@@ -15,11 +15,11 @@ import (
 
 	logInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/seelog_interceptor"
 	monitorInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/statsd_interceptor"
-	tracingInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/zipkin_interceptor"
+	tracingInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/opentracing_interceptor"
 
     logger "github.com/DarkMetrix/gofra/common/logger/seelog"
 	monitor "github.com/DarkMetrix/gofra/common/monitor/statsd"
-    tracing "github.com/DarkMetrix/gofra/common/tracing/zipkin"
+    tracing "github.com/DarkMetrix/gofra/common/tracing/jaeger"
 
 	pool "github.com/DarkMetrix/gofra/grpc-utils/pool"
 	commonUtils "github.com/DarkMetrix/gofra/common/utils"
@@ -33,10 +33,10 @@ func main() {
     logger.Init("../conf/log.config", "default_test")
 
 	// init monitor
-	monitor.Init("127.0.0.1:8125", "default")
+	monitor.Init("127.0.0.1:8125", "default_test")
 
     // init tracing
-    tracing.Init("http://127.0.0.1:9411/api/v1/spans", "false", "localhost:58888", "default")
+    tracing.Init("127.0.0.1:6831", "default_test")
 
 	// dial remote server
 	clientOpts := make([]grpc.DialOption, 0)

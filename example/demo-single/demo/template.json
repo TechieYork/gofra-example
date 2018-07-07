@@ -5,7 +5,7 @@
     "version":"0.0.1",
     "server":
     {
-        "addr":"localhost:58888"
+        "addr":"127.0.0.1:58888"
     },
     "monitor_package":
     {
@@ -14,12 +14,12 @@
     },
     "tracing_package":
     {
-        "package":"github.com/DarkMetrix/gofra/common/tracing/zipkin",
-        "init_param":"\"http://127.0.0.1:9411/api/v1/spans\", \"false\", \"localhost:58888\", \"demo\""
+        "package":"github.com/DarkMetrix/gofra/common/tracing/jaeger",
+        "init_param":"\"127.0.0.1:6831\", \"demo\""
     },
     "interceptor_package":
     {
         "monitor_package":"github.com/DarkMetrix/gofra/grpc-utils/interceptor/statsd_interceptor",
-        "tracing_package":"github.com/DarkMetrix/gofra/grpc-utils/interceptor/zipkin_interceptor"
+        "tracing_package":"github.com/DarkMetrix/gofra/grpc-utils/interceptor/opentracing_interceptor"
     }
 }
