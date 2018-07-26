@@ -30,10 +30,9 @@ import (
 func AddEmail(ctx context.Context) error {
 	// get remote server connection
 	conn, err := pool.GetConnectionPool().GetConnection(context.Background(),":60003")
-	defer conn.Close()
 
 	// new client
-	c := email.NewEmailServiceClient(conn.Get())
+	c := email.NewEmailServiceClient(conn)
 
 	if err != nil {
 		fmt.Printf("AddEmail get connection failed! error%v", err.Error())
@@ -46,7 +45,6 @@ func AddEmail(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddEmail request failed! error%v", err.Error())
-		conn.Unhealthy()
 		return err
 	}
 
@@ -56,10 +54,9 @@ func AddEmail(ctx context.Context) error {
 func AddAddr(ctx context.Context) error {
 	// get remote server connection
 	conn, err := pool.GetConnectionPool().GetConnection(context.Background(),":60004")
-	defer conn.Close()
 
 	// new client
-	c := addr.NewAddrServiceClient(conn.Get())
+	c := addr.NewAddrServiceClient(conn)
 
 	if err != nil {
 		fmt.Printf("AddAddr get connection failed! error%v", err.Error())
@@ -72,7 +69,6 @@ func AddAddr(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddAddr request failed! error%v", err.Error())
-		conn.Unhealthy()
 		return err
 	}
 

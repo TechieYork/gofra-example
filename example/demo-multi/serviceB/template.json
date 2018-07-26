@@ -13,8 +13,8 @@
     },
     "tracing_package":
     {
-        "package":"github.com/DarkMetrix/gofra/common/tracing/zipkin",
-        "init_param":"\"http://127.0.0.1:9411/api/v1/spans\", \"false\", \":60002\", \"serviceB\""
+        "package":"github.com/DarkMetrix/gofra/common/tracing/jaeger",
+        "init_param":"\"127.0.0.1:6831\", \"serviceB\""
     },
     "interceptor_package":
     {

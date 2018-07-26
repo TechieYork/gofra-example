@@ -30,10 +30,9 @@ import (
 func AddName(ctx context.Context) error {
 	// get remote server connection
 	conn, err := pool.GetConnectionPool().GetConnection(context.Background(),":60001")
-	defer conn.Close()
 
 	// new client
-	c := name.NewNameServiceClient(conn.Get())
+	c := name.NewNameServiceClient(conn)
 
 	if err != nil {
 		fmt.Printf("AddName get connection failed! error%v", err.Error())
@@ -46,7 +45,6 @@ func AddName(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddName request failed! error%v", err.Error())
-		conn.Unhealthy()
 		return err
 	}
 
@@ -56,10 +54,9 @@ func AddName(ctx context.Context) error {
 func AddAge(ctx context.Context) error {
 	// get remote server connection
 	conn, err := pool.GetConnectionPool().GetConnection(context.Background(),":60002")
-	defer conn.Close()
 
 	// new client
-	c := age.NewAgeServiceClient(conn.Get())
+	c := age.NewAgeServiceClient(conn)
 
 	if err != nil {
 		fmt.Printf("AddAge get connection failed! error%v", err.Error())
@@ -72,7 +69,6 @@ func AddAge(ctx context.Context) error {
 
 	if err != nil {
 		fmt.Printf("AddAge request failed! error%v", err.Error())
-		conn.Unhealthy()
 		return err
 	}
 
