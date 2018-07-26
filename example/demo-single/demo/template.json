@@ -20,6 +20,6 @@
     "interceptor_package":
     {
         "monitor_package":"github.com/DarkMetrix/gofra/grpc-utils/interceptor/statsd_interceptor",
-        "tracing_package":"github.com/DarkMetrix/gofra/grpc-utils/interceptor/zipkin_interceptor"
+        "tracing_package":"github.com/DarkMetrix/gofra/grpc-utils/interceptor/opentracing_interceptor"
     }
 }
