@@ -110,6 +110,8 @@ func testHealthCheck(wg *sync.WaitGroup) {
 
 	//calc per req cost average
 	timeTotalNano := int64(0)
+	timeMaxNano := int64(0)
+	timeMinNano := int64(0xFFFFFFFF)
 
 	// rpc call
 	req := new(health_check.HealthCheckRequest)
@@ -142,8 +144,19 @@ func testHealthCheck(wg *sync.WaitGroup) {
 
 		reqEnd := time.Now().UnixNano()
 
-		timeTotalNano += reqEnd - reqStart
+		timeCost := reqEnd - reqStart
+
+		timeTotalNano += timeCost
+
+		if timeCost > timeMaxNano {
+			timeMaxNano = timeCost
+		}
+
+		if timeCost < timeMinNano {
+			timeMinNano = timeCost
+		}
 	}
 
-	log.Infof("per request cost avg:%vms", timeTotalNano / int64(*requests) / 1000000)
+	log.Infof("per request cost avg:%vms, min:%vms, max:%vms",
+		timeTotalNano / int64(*requests) / 1000000, timeMinNano / 1000000, timeMaxNano / 1000000)
 }
