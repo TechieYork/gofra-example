@@ -23,6 +23,7 @@ import (
 	monitorInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/statsd_interceptor"
 	tracingInterceptor "github.com/DarkMetrix/gofra/grpc-utils/interceptor/opentracing_interceptor"
 
+	config "github.com/TechieYork/gofra-example/example/demo-single/benchmark/src/config"
 	health_check "github.com/TechieYork/gofra-example/example/demo-single/demo/src/proto/health_check"
 )
 
@@ -43,20 +44,32 @@ func main() {
 
 	if err != nil {
 		log.Warnf("Init logger failed! error:%v", err.Error())
+		return
 	}
 
 	log.Info("====== Test [demo-benchmark] begin ======")
 	defer log.Info("====== Test [demo-benchmark] end ======")
 
+	// init config
+	conf := config.GetConfig()
+
+	err = conf.Init("../conf/config.toml")
+
+	if err != nil {
+		panic("Init config failed! error:%v",)
+		log.Warnf("Init config failed! error:%v", err.Error())
+		return
+	}
+
 	// init monitor
-	err = monitor.Init("127.0.0.1:8125", "demo_benchmark")
+	err = monitor.Init(conf.Monitor.Params...)
 
 	if err != nil {
 		log.Warnf("Init monitor failed! error:%v", err.Error())
 	}
 
     // init tracing
-    err = tracing.Init("127.0.0.1:6831", "demo_benchmark")
+    err = tracing.Init(conf.Tracing.Params...)
 
 	if err != nil {
 		log.Warnf("Init tracing failed! error:%v", err.Error())
